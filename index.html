@@ -50,7 +50,7 @@ fetch('https://rapiflash-ia.freyling88.workers.dev/', {
   body: JSON.stringify({pregunta: raw})
 })
 .then(r => r.json())
-.then(data => say(data.respuesta || data.mensaje || 'No recibí respuesta de Gemini.'))
+.then(data => say(data.respuesta || data.mensaje || data.error || JSON.stringify(data) 'No recibí respuesta de Gemini.'))
 .catch(() => say('No pude conectar con Gemini.'));}
 $('chat').onsubmit=e=>{e.preventDefault();const t=$('message').value;$('message').value='';handle(t)};
 $('contactForm').onsubmit=e=>{e.preventDefault();const name=$('contactName').value.trim(),num=$('contactNumber').value.trim();if(!/^\+?\d[\d\s()-]{6,18}$/.test(num)){alert('Escribe un número válido, preferiblemente con código de país.');return}contacts[name]=num;store('contacts',contacts);renderContacts();$('contactForm').reset();say('Contacto '+name+' guardado.')};
