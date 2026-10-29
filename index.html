@@ -44,7 +44,14 @@ if(/(que fecha es|que dia es hoy|fecha de hoy)/.test(t)){say('Hoy es '+new Date(
 if(/^(calcula|cuanto es|cuanto da)\b/.test(t)){math(t);return}
 if(/^(hola|buenos dias|buenas tardes|buenas noches|como estas)/.test(t)||t===''){say('Hola, aquí está RapiFlash IA. Dime qué necesitas.');return}
 if(/(que puedes hacer|ayuda|comandos)/.test(t)){say('Puedo abrir páginas, buscar en Google, hacer cálculos, decirte la hora, crear recordatorios mientras esta página esté abierta, y abrir llamadas o WhatsApp a tus contactos guardados.');return}
-say('Te escuché, pero todavía no tengo una inteligencia artificial conversacional conectada para responder preguntas abiertas. Puedo abrir páginas, hacer cálculos, buscar, llamar a contactos guardados o programar recordatorios.')}
+fetch('https://rapiflash-ia.freyling88.workers.dev/', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({pregunta: raw})
+})
+.then(r => r.json())
+.then(data => say(data.respuesta || data.mensaje || 'No recibí respuesta de Gemini.'))
+.catch(() => say('No pude conectar con Gemini.'));}
 $('chat').onsubmit=e=>{e.preventDefault();const t=$('message').value;$('message').value='';handle(t)};
 $('contactForm').onsubmit=e=>{e.preventDefault();const name=$('contactName').value.trim(),num=$('contactNumber').value.trim();if(!/^\+?\d[\d\s()-]{6,18}$/.test(num)){alert('Escribe un número válido, preferiblemente con código de país.');return}contacts[name]=num;store('contacts',contacts);renderContacts();$('contactForm').reset();say('Contacto '+name+' guardado.')};
 $('clear').onclick=()=>{if(confirm('¿Borrar la conversación guardada?')){history=[];store('history',history);renderHistory()}};
